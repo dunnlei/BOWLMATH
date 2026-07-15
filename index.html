@@ -211,7 +211,7 @@
         <div class="field"><label for="aCarb">Carb <span class="unit">dry</span></label><select id="aCarb"><option value="brownrice">Brown rice</option><option value="whiterice">White rice</option><option value="pasta">Fiorelli pasta</option><option value="fusilli">HP fusilli</option></select><input id="aCarbW" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
 
         <div class="grp">Added day-of</div>
-        <div class="field"><label for="aDairy">Dairy</label><select id="aDairy"><option value="cottage">Cottage cheese</option><option value="yogurt">Greek yogurt</option></select><input id="aDairyW" type="number" inputmode="decimal" value="67"><span class="unit">g</span></div>
+        <div class="field"><label for="aDairy">Dairy</label><select id="aDairy"><option value="cottage">Cottage cheese</option><option value="yogurt">Greek yogurt</option><option value="none">— none —</option></select><input id="aDairyW" type="number" inputmode="decimal" value="67"><span class="unit">g</span></div>
         <div class="field"><label for="aVeg1">Veg 1 <span class="unit">cooked</span></label><select id="aVeg1"><option value="sweetpotato" selected>Sweet potato</option><option value="potato">Potato</option><option value="broccoli">Broccoli</option><option value="cauliflower">Cauliflower</option><option value="brussels">Brussels sprouts</option><option value="greenbeans">Green beans</option><option value="kale">Kale</option><option value="asparagus">Asparagus</option><option value="okra">Okra</option><option value="spinach">Baby spinach</option><option value="choysum">Choy sum</option><option value="courgette">Courgette</option></select><input id="aVeg1W" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
         <div class="field"><label for="aVeg2">Veg 2 <span class="unit">cooked</span></label><select id="aVeg2"><option value="none">— none —</option><option value="sweetpotato">Sweet potato</option><option value="potato">Potato</option><option value="broccoli" selected>Broccoli</option><option value="cauliflower">Cauliflower</option><option value="brussels">Brussels sprouts</option><option value="greenbeans">Green beans</option><option value="kale">Kale</option><option value="asparagus">Asparagus</option><option value="okra">Okra</option><option value="spinach">Baby spinach</option><option value="choysum">Choy sum</option><option value="courgette">Courgette</option></select><input id="aVeg2W" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
         <div class="field"><label for="aFruit1">Fruit 1</label><select id="aFruit1"><option value="mango">Mango</option><option value="blueberries" selected>Blueberries</option><option value="raspberries">Raspberries</option><option value="kiwi">Kiwi</option><option value="apple">Apple</option><option value="pear">Pear</option></select><input id="aFruit1W" type="number" inputmode="decimal" value="50"><span class="unit">g</span></div>
@@ -312,7 +312,8 @@
     const Pt=parseFloat($("aTargetP").value)||0, Ct=parseFloat($("aTargetC").value)||0;
     const prot=MEATS[$("aProt").value], pw=parseFloat($("aProtW").value)||0, P=m(prot,pw);
     const carb=CARBS[$("aCarb").value], cw=parseFloat($("aCarbW").value)||0, C=m(carb,cw);
-    const dW=parseFloat($("aDairyW").value)||0, dairy=DAIRY[$("aDairy").value], D=m(dairy,dW);
+    const dKey=$("aDairy").value, dairy=dKey==="none"?null:DAIRY[dKey];
+    const dW=dairy?(parseFloat($("aDairyW").value)||0):0, D=dairy?m(dairy,dW):{p:0,c:0,f:0,k:0};
     const v1=VEG[$("aVeg1").value], v1w=parseFloat($("aVeg1W").value)||0, V1=m(v1,v1w);
     const v2k=$("aVeg2").value, v2=v2k==="none"?null:VEG[v2k], v2w=parseFloat($("aVeg2W").value)||0, V2=v2?m(v2,v2w):{p:0,c:0,f:0,k:0};
     const f1=FRUIT[$("aFruit1").value], f1w=parseFloat($("aFruit1W").value)||0, F1=m(f1,f1w);
@@ -329,7 +330,7 @@
     h+=rowLine(prot.n,pw,P,"raw");
     h+=rowLine(carb.n,cw,C,carb.s);
     h+=`<div class="grp">Added day-of</div>`;
-    h+=rowLine(dairy.n,dW,D,"dairy");
+    if(dairy)h+=rowLine(dairy.n,dW,D,"dairy");
     h+=rowLine(v1.n,v1w,V1,"veg");
     if(v2)h+=rowLine(v2.n,v2w,V2,"veg");
     h+=rowLine(f1.n,f1w,F1,"fruit");
@@ -347,7 +348,7 @@
   }
   let dairyAnchor=8;
   let planProt='chicken',planCarb='brownrice',planPg=[0,0],planCg=[0,0],assembleWho=0;
-  function updateDairyW(){if(!$("aDairyW"))return;const d=DAIRY[$("aDairy").value];$("aDairyW").value=Math.round(dairyAnchor/d.p*100);}
+  function updateDairyW(){if(!$("aDairyW"))return;const k=$("aDairy").value;if(k==="none"){$("aDairyW").value="";$("aDairyW").disabled=true;return;}$("aDairyW").disabled=false;const d=DAIRY[k];$("aDairyW").value=Math.round(dairyAnchor/d.p*100);}
   function syncCookToBuild(){
     if($("aProt"))$("aProt").value=planProt;
     if($("aCarb"))$("aCarb").value=planCarb;
