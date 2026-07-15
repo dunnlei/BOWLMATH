@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bowl Math">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Bowl Math</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#17140F;--paper:#F6F6F2;--card:#FCFCFA;--line:#17140F;--him:#1B54C7;--her:#0E8C8C;--muted:#6B675E;--hairline:#CFCEC6;--flag:#B4531B}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;line-height:1.45;padding:calc(18px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));display:flex;justify-content:center}
+  .sheet{width:100%;max-width:430px;background:var(--card);border:3px solid var(--line)}
+  .mast{padding:14px 16px 12px;border-bottom:3px solid var(--line)}
+  .mast h1{font-size:32px;font-weight:900;letter-spacing:-1.4px;line-height:.9;text-transform:uppercase}
+  .mast .sub{font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted);margin-top:6px;text-transform:uppercase}
+  .mast .who{display:flex;gap:14px;margin-top:9px;font-size:12px;font-weight:700}
+  .chip{display:inline-flex;align-items:center;gap:5px}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .dot.h{background:var(--him)}.dot.g{background:var(--her)}
+  .tabs{display:flex;border-bottom:5px solid var(--line);position:sticky;top:env(safe-area-inset-top);background:var(--card);z-index:5}
+  .tabs button{flex:1;font-family:'Archivo';font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:12px 2px;background:var(--card);color:var(--muted);border:0;border-right:1px solid var(--hairline);cursor:pointer}
+  .tabs button:last-child{border-right:0}
+  .tabs button.active{background:var(--ink);color:var(--card)}
+  [data-panel]{display:none}
+  [data-panel].active{display:block}
+  section{padding:13px 16px}
+  section+section{border-top:1px solid var(--hairline)}
+  .eyebrow{font-size:11px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:9px;display:flex;justify-content:space-between;align-items:baseline}
+  .eyebrow .note{font-weight:600;letter-spacing:.3px;color:var(--muted);font-size:10px}
+  .hero{padding:16px;border-bottom:5px solid var(--line)}
+  .hero .lab{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .heroGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pcard{border:2px solid var(--line);padding:11px 12px}
+  .pcard .nm{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+  .pcard .big{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:38px;line-height:1;letter-spacing:-1px}
+  .pcard.h .big{color:var(--him)}.pcard.g .big{color:var(--her)}
+  .pcard .big small{font-size:14px;font-weight:500;color:var(--muted);letter-spacing:0}
+  .pcard .macros{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);margin-top:7px;font-weight:500}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:right;padding:5px 0}
+  th:first-child,td:first-child{text-align:left;font-weight:600}
+  thead th{font-size:11px;letter-spacing:.4px;text-transform:uppercase;border-bottom:2px solid var(--line);padding-bottom:5px;color:var(--muted);font-weight:800}
+  thead th.him{color:var(--him)}thead th.her{color:var(--her)}
+  tbody tr+tr td{border-top:1px solid var(--hairline)}
+  .num{font-family:'JetBrains Mono',monospace;font-weight:500;font-variant-numeric:tabular-nums}
+  .him-n{color:var(--him);font-weight:700}.her-n{color:var(--her);font-weight:700}
+  .unit{color:var(--muted);font-size:11px;font-weight:600}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:14px}
+  .grid .row{display:flex;justify-content:space-between;border-bottom:1px solid var(--hairline);padding:4px 0}
+  .flag{color:var(--flag)}
+  .unit.tag-ok{color:#1F9E52;font-weight:700}
+  [data-panel="build"] .out .orow{display:grid;grid-template-columns:minmax(0,1fr) 54px 42px 32px 30px;gap:4px;align-items:baseline;font-size:13.5px;padding:3px 0}
+  [data-panel="build"] .out .orow>span+span{font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right}
+  [data-panel="build"] .out .orow>span:nth-child(n+3){color:var(--muted);font-size:11px;font-weight:600}
+  [data-panel="build"] .out .orow .on{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+  [data-panel="build"] .out .totrow .num{font-weight:800}
+  .unit.tag-off{color:#C0392B;font-weight:700}
+  .calc{background:#F0EFEA;border:2px solid var(--line);padding:12px;margin-top:4px}
+  .calc p.hint{font-size:11.5px;color:var(--muted);margin-bottom:10px;font-weight:500}
+  .hint{font-size:11.5px;color:var(--muted);font-weight:500}
+  .field{display:flex;align-items:center;gap:8px;margin:7px 0;flex-wrap:wrap}
+  .field label{font-size:12.5px;font-weight:700;flex:1 1 auto}
+  .field input{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;width:64px;padding:7px 8px;border:2px solid var(--line);background:var(--card);text-align:right;color:var(--ink)}
+  .field input:focus{outline:3px solid var(--him);outline-offset:1px}
+  .field select{font-family:'Archivo';font-weight:700;font-size:13px;padding:6px;border:2px solid var(--line);background:var(--card);color:var(--ink);flex:1 1 120px;max-width:170px}
+  .field select:focus{outline:3px solid var(--him);outline-offset:1px}
+  [data-panel="build"] .calc .field:not(.trow){display:grid;grid-template-columns:124px minmax(0,1fr) 50px auto;gap:6px;align-items:center}
+  [data-panel="build"] .calc .field:not(.trow)>label{flex:none;white-space:nowrap}
+  [data-panel="build"] .calc .field:not(.trow)>select{width:100%;max-width:none;min-width:0;flex:none}
+  [data-panel="build"] .calc .field:not(.trow)>input{width:100%!important;flex:none}
+  [data-panel="build"] .calc .field.nosel>input{grid-column:3}
+  [data-panel="build"] .calc .field.nosel>span.unit{grid-column:4}
+  [data-panel="build"] .calc .field.trow{display:grid;grid-template-columns:124px minmax(0,1fr) 50px auto;gap:6px;align-items:center}
+  [data-panel="build"] .calc .field.trow>label{flex:none;white-space:nowrap}
+  [data-panel="build"] .calc .field.trow .tp{display:flex;justify-content:flex-end;align-items:center;gap:6px;min-width:0}
+  [data-panel="build"] .calc .field.trow .tp input{width:50px!important;flex:none}
+  [data-panel="build"] .calc .field.trow>input{width:100%!important;flex:none}
+  [data-panel="build"] .calc .field>span.unit{justify-self:start;text-align:left}
+  .grp{font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ink);border-top:1px solid var(--hairline);margin:13px 0 3px;padding-top:9px}
+  .presets{display:flex;gap:6px;margin:2px 0 4px}
+  .presets button{font-family:'Archivo';font-weight:700;font-size:11px;padding:5px 9px;cursor:pointer;border:2px solid var(--line);background:var(--card);color:var(--ink);text-transform:uppercase;letter-spacing:.3px}
+  .presets button.h:hover{background:var(--him);color:#fff;border-color:var(--him)}
+  .presets button.g:hover{background:var(--her);color:#fff;border-color:var(--her)}
+  .out{margin-top:10px;border-top:2px solid var(--line);padding-top:9px}
+  .out .line{display:flex;justify-content:space-between;font-size:13.5px;padding:3px 0;gap:10px}
+  .out .line span:last-child{font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right}
+  .result{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;display:flex;justify-content:space-between;padding:6px 0}
+  .result.h span:last-child{color:var(--him)}.result.g span:last-child{color:var(--her)}
+  .result.dashed{border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:6px 0}
+  .totrow{display:flex;justify-content:space-between;font-size:14px;padding:3px 0}
+  .totrow b{font-weight:800}
+  .totrow.grand{border-top:2px solid var(--line);padding-top:8px;margin-top:6px}
+  ol.method{list-style:none;counter-reset:s;font-size:13px}
+  ol.method li{counter-increment:s;padding:6px 0 6px 30px;position:relative;border-bottom:1px solid var(--hairline)}
+  ol.method li:last-child{border-bottom:0}
+  ol.method li::before{content:counter(s);position:absolute;left:0;top:6px;width:20px;height:20px;background:var(--ink);color:var(--card);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+  .callout{background:var(--ink);color:var(--card);padding:11px 13px;font-size:12.5px;font-weight:600}
+  .callout b{color:#FFD36B}
+  footer{padding:12px 16px;border-top:5px solid var(--line);font-size:10.5px;color:var(--muted);font-weight:600;line-height:1.5}
+  .stamp{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.5px;margin-top:6px;color:var(--muted)}
+  .fullbtn{width:100%;font-family:'Archivo';font-weight:800;font-size:12.5px;letter-spacing:.6px;text-transform:uppercase;padding:14px 16px;background:var(--ink);color:var(--card);border:0;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .fullbtn span:last-child{color:#B9B7AE;font-weight:700}
+  .backbtn{font-family:'Archivo';font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px;padding:7px 12px;background:var(--card);color:var(--ink);border:2px solid var(--line);cursor:pointer;margin-bottom:12px}
+  .ntable{table-layout:fixed}
+  .ntable th:first-child,.ntable td:first-child{width:44%}
+  .ntable th:not(:first-child),.ntable td:not(:first-child){width:14%}
+  .ntable td:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="mast">
+    <h1>Bowl&nbsp;Math</h1>
+    <div class="sub">Farmers-bowl macro reference · recomp block</div>
+    <div class="who"><span class="chip"><span class="dot h"></span>YOU · 2 shakes</span><span class="chip"><span class="dot g"></span>HER · 1 shake</span></div>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="ref" class="active">Reference</button>
+    <button data-tab="cook">Cook</button>
+    <button data-tab="build">Build</button>
+    <button data-tab="split">Split</button>
+  </div>
+
+  <!-- REFERENCE -->
+  <div data-panel="ref" class="active">
+    <div class="hero">
+      <div class="lab">Per bowl · protein · 2 bowls/day</div>
+      <div class="heroGrid">
+        <div class="pcard h"><div class="nm"><span class="dot h"></span>You</div><div class="big">42<small> g</small></div><div class="macros">118 C · 24 F · 856 kcal</div></div>
+        <div class="pcard g"><div class="nm"><span class="dot g"></span>Her</div><div class="big">37<small> g</small></div><div class="macros">103 C · 18 F · 722 kcal</div></div>
+      </div>
+    </div>
+    <section>
+      <div class="eyebrow"><span>Daily targets</span><span class="note">recomp · maintenance</span></div>
+      <table><thead><tr><th>Per day</th><th class="him">You</th><th class="her">Her</th></tr></thead><tbody>
+        <tr><td>Calories</td><td class="num him-n">2000</td><td class="num her-n">1600</td></tr>
+        <tr><td>Protein</td><td class="num him-n">135<span class="unit">g</span></td><td class="num her-n">100<span class="unit">g</span></td></tr>
+        <tr><td>Carbs</td><td class="num him-n">245<span class="unit">g</span></td><td class="num her-n">210<span class="unit">g</span></td></tr>
+        <tr><td>Fat</td><td class="num him-n">55<span class="unit">g</span></td><td class="num her-n">40<span class="unit">g</span></td></tr>
+      </tbody></table>
+    </section>
+    <section>
+      <div class="eyebrow"><span>Dairy anchor</span><span class="note">weigh per spoon</span></div>
+      <table><thead><tr><th></th><th class="him">You · 8 g P</th><th class="her">Her · 5 g P</th></tr></thead><tbody>
+        <tr><td>Bulla cottage cheese</td><td class="num him-n">67 g</td><td class="num her-n">42 g</td></tr>
+        <tr><td>Chobani yogurt</td><td class="num him-n">86 g</td><td class="num her-n">54 g</td></tr>
+      </tbody></table>
+    </section>
+    <section>
+      <div class="eyebrow"><span>Protein sources</span><span class="note">g per 10 g protein</span></div>
+      <div class="grid">
+        <div class="row"><b>Chicken breast</b><span class="num">44 g</span></div>
+        <div class="row"><b>Grass-fed rib-eye <span class="flag">≈</span></b><span class="num">48 g</span></div>
+        <div class="row"><b>Salmon</b><span class="num">56 g</span></div>
+        <div class="row"><b>Shrimp</b><span class="num">67 g</span></div>
+      </div>
+    </section>
+    <section>
+      <div class="eyebrow"><span>Carb sources</span><span class="note">g per 10 g carbs</span></div>
+      <div class="grid">
+        <div class="row"><b>Brown rice</b><span class="num">14 g</span></div>
+        <div class="row"><b>White rice</b><span class="num">13 g</span></div>
+        <div class="row"><b>Fiorelli pasta</b><span class="num">14 g</span></div>
+        <div class="row"><b>HP fusilli</b><span class="num">18 g</span></div>
+      </div>
+    </section>
+    <section>
+      <button class="fullbtn" onclick="openNutri()"><span>Full nutrition table</span><span>per 100 g →</span></button>
+    </section>
+  </div>
+
+  <!-- COOK-AHEAD -->
+  <div data-panel="cook">
+    <section>
+      <div class="eyebrow"><span>Cook-ahead planner</span><span class="note">how much to cook</span></div>
+      <div class="calc">
+        <p class="hint">Pick your batch protein &amp; carb. It solves the grams to cook <b>per bowl</b> for each of you, leaving room for the veg + fruit you add day-of.</p>
+        <div class="field"><label for="pProt">Protein source</label><select id="pProt"><option value="chicken">Chicken breast</option><option value="ribeye">Grass-fed rib-eye</option><option value="salmon">Salmon</option><option value="shrimp">Shrimp</option></select></div>
+        <div class="field"><label for="pCarb">Carb source</label><select id="pCarb"><option value="brownrice">Brown rice</option><option value="whiterice">White rice</option><option value="pasta">Fiorelli pasta</option><option value="fusilli">HP fusilli</option></select></div>
+        <div class="grp">Day-of reserve (veg + fruit)</div>
+        <div class="field"><label for="pResC">Carbs you'll add later</label><input id="pResC" type="number" inputmode="decimal" value="20"><span class="unit">g</span></div>
+        <div class="field"><label for="pResP">Protein from veg</label><input id="pResP" type="number" inputmode="decimal" value="3"><span class="unit">g</span></div>
+        <div class="out" id="pout"></div>
+        <p class="hint" style="margin-top:9px">Assumes dairy added day-of (8 g you · 5 g her). Raw for meat, dry for rice/pasta.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- BUILD (day-of assembler) -->
+  <div data-panel="build">
+    <section>
+      <div class="eyebrow"><span>Day-of assembler</span><span class="note">enter cooked → add veg + fruit</span></div>
+      <div class="calc">
+        <div class="presets">
+          <button class="h" onclick="setAssemble(42,118,8)">You · 42 / 118C</button>
+          <button class="g" onclick="setAssemble(37,103,5)">Her · 37 / 103C</button>
+        </div>
+        <div class="field trow"><label>Target</label><span class="tp"><input id="aTargetP" type="number" inputmode="decimal" value="42"><span class="unit">g P</span></span><input id="aTargetC" type="number" inputmode="decimal" value="118"><span class="unit">g C</span></div>
+
+        <div class="grp">Cooked ahead</div>
+        <div class="field"><label for="aProt">Protein <span class="unit">raw</span></label><select id="aProt"><option value="chicken">Chicken breast</option><option value="ribeye">Grass-fed rib-eye</option><option value="salmon">Salmon</option><option value="shrimp">Shrimp</option></select><input id="aProtW" type="number" inputmode="decimal" value="85"><span class="unit">g</span></div>
+        <div class="field"><label for="aCarb">Carb <span class="unit">dry</span></label><select id="aCarb"><option value="brownrice">Brown rice</option><option value="whiterice">White rice</option><option value="pasta">Fiorelli pasta</option><option value="fusilli">HP fusilli</option></select><input id="aCarbW" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
+
+        <div class="grp">Added day-of</div>
+        <div class="field"><label for="aDairy">Dairy</label><select id="aDairy"><option value="cottage">Cottage cheese</option><option value="yogurt">Greek yogurt</option></select><input id="aDairyW" type="number" inputmode="decimal" value="67"><span class="unit">g</span></div>
+        <div class="field"><label for="aVeg1">Veg 1 <span class="unit">cooked</span></label><select id="aVeg1"><option value="sweetpotato" selected>Sweet potato</option><option value="potato">Potato</option><option value="broccoli">Broccoli</option><option value="cauliflower">Cauliflower</option><option value="brussels">Brussels sprouts</option><option value="greenbeans">Green beans</option><option value="kale">Kale</option><option value="asparagus">Asparagus</option><option value="okra">Okra</option><option value="spinach">Baby spinach</option><option value="choysum">Choy sum</option><option value="courgette">Courgette</option></select><input id="aVeg1W" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
+        <div class="field"><label for="aVeg2">Veg 2 <span class="unit">cooked</span></label><select id="aVeg2"><option value="none">— none —</option><option value="sweetpotato">Sweet potato</option><option value="potato">Potato</option><option value="broccoli" selected>Broccoli</option><option value="cauliflower">Cauliflower</option><option value="brussels">Brussels sprouts</option><option value="greenbeans">Green beans</option><option value="kale">Kale</option><option value="asparagus">Asparagus</option><option value="okra">Okra</option><option value="spinach">Baby spinach</option><option value="choysum">Choy sum</option><option value="courgette">Courgette</option></select><input id="aVeg2W" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
+        <div class="field"><label for="aFruit1">Fruit 1</label><select id="aFruit1"><option value="mango">Mango</option><option value="blueberries" selected>Blueberries</option><option value="raspberries">Raspberries</option><option value="kiwi">Kiwi</option><option value="apple">Apple</option><option value="pear">Pear</option></select><input id="aFruit1W" type="number" inputmode="decimal" value="50"><span class="unit">g</span></div>
+        <div class="field"><label for="aFruit2">Fruit 2</label><select id="aFruit2"><option value="none">— none —</option><option value="mango">Mango</option><option value="blueberries">Blueberries</option><option value="raspberries">Raspberries</option><option value="kiwi">Kiwi</option><option value="apple">Apple</option><option value="pear">Pear</option></select><input id="aFruit2W" type="number" inputmode="decimal" value="50"><span class="unit">g</span></div>
+        <div class="grp">Toppers</div>
+        <div class="field nosel"><label for="aEgg">Egg <span class="unit">×1 egg</span></label><input id="aEgg" type="number" inputmode="decimal" value="0" step="1" style="width:48px"><span class="unit">qty</span></div>
+        <div class="field nosel"><label for="aAvo">Avocado <span class="unit">×½</span></label><input id="aAvo" type="number" inputmode="decimal" value="0" step="1" style="width:48px"><span class="unit">qty</span></div>
+        <div class="field nosel"><label for="aOil">Cooking oil</label><input id="aOil" type="number" inputmode="decimal" value="1" step="0.5" style="width:48px"><span class="unit">tsp</span></div>
+
+        <div class="out" id="aout"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SPLIT -->
+  <div data-panel="split">
+    <section>
+      <div class="eyebrow"><span>Cook together, split</span><span class="note">no cooked-weight guessing</span></div>
+      <ol class="method">
+        <li>Weigh <b>total raw</b>, log macros off that.</li>
+        <li>Cook it all together.</li>
+        <li>Split the <b>cooked</b> batch by the raw ratio below.</li>
+      </ol>
+      <div class="calc">
+        <div class="field"><label for="rawH">Your raw target</label><input id="rawH" type="number" inputmode="decimal" value="80"><span class="unit">g</span></div>
+        <div class="field"><label for="rawG">Her raw target</label><input id="rawG" type="number" inputmode="decimal" value="65"><span class="unit">g</span></div>
+        <div class="field"><label for="cooked">Total cooked (scale)</label><input id="cooked" type="number" inputmode="decimal" value="110"><span class="unit">g</span></div>
+        <div class="out" id="sout"></div>
+      </div>
+    </section>
+    <section>
+      <div class="eyebrow"><span>Portion from batch</span><span class="note">when cooked ≠ plan</span></div>
+      <div class="calc">
+        <p class="hint">Cooked a different amount than suggested? Enter the batch and your dry/raw target — get the cooked weight to serve yourself.</p>
+        <div class="field"><label for="yr">Batch raw / dry cooked</label><input id="yr" type="number" inputmode="decimal" value="580"><span class="unit">g</span></div>
+        <div class="field"><label for="yc">Batch cooked (scale)</label><input id="yc" type="number" inputmode="decimal" value="1180"><span class="unit">g</span></div>
+        <div class="field"><label for="yt">Your raw / dry target</label><input id="yt" type="number" inputmode="decimal" value="134"><span class="unit">g</span></div>
+        <div class="out" id="yout"></div>
+        <p class="hint" style="margin-top:9px">Typical dry→cooked: rice ×2.7 · Fiorelli ×2.3 · chicken ×0.75 · shrimp ×0.88.</p>
+      </div>
+    </section>
+  </div>
+
+  <div data-panel="nutri">
+    <section>
+      <button class="backbtn" onclick="backToRef()">← Reference</button>
+      <div class="eyebrow"><span>Nutrition · per 100 g</span><span class="note">all ingredients</span></div>
+      <div id="nutriBody"></div>
+      <p class="hint" style="margin-top:12px">Generic foods: USDA. Branded (dairy, shake) &amp; ≈ rib-eye from labels/estimates. Per 100 g except shake (per serving). This list grows as you add ingredients.</p>
+    </section>
+  </div>
+
+  <footer>
+    Values from your product labels + USDA FoodData Central. ≈-flagged &amp; branded values are estimates. Basis: ISSN / ACSM–AND–DC position stands. Individual needs vary — not medical advice.
+    <div class="stamp">RECOMP · 8 G DAIRY ANCHOR</div>
+  </footer>
+</div>
+<script>
+  const $ = id => document.getElementById(id);
+  const g = n => (isFinite(n) ? Math.round(n) : "–");
+  const CARBS={brownrice:{n:"Brown rice",p:7.9,c:71.3,f:2.4,k:345,s:"dry"},whiterice:{n:"White rice",p:5.4,c:78,f:1.1,k:345,s:"dry"},pasta:{n:"Fiorelli pasta",p:12.2,c:71.4,f:1.4,k:353,s:"dry"},fusilli:{n:"HP fusilli",p:22.0,c:55.3,f:1.9,k:340,s:"dry"}};
+  const VEG={sweetpotato:{n:"Sweet potato",p:1.6,c:20,f:0.1,k:85},potato:{n:"Potato",p:1.7,c:20,f:0.1,k:87},broccoli:{n:"Broccoli",p:2.4,c:7,f:0.4,k:35},cauliflower:{n:"Cauliflower",p:1.8,c:4,f:0.5,k:23},brussels:{n:"Brussels sprouts",p:2.6,c:7,f:0.5,k:36},greenbeans:{n:"Green beans",p:1.9,c:8,f:0.3,k:35},kale:{n:"Kale",p:1.9,c:6,f:0.4,k:28},asparagus:{n:"Asparagus",p:2.4,c:4,f:0.2,k:22},okra:{n:"Okra",p:1.9,c:4.5,f:0.2,k:22},spinach:{n:"Baby spinach",p:3.0,c:4,f:0.3,k:23},choysum:{n:"Choy sum",p:1.8,c:3,f:0.3,k:20},courgette:{n:"Courgette",p:1.2,c:3,f:0.3,k:16}};
+  const FRUIT={mango:{n:"Mango",p:0.8,c:15,f:0.4,k:60},blueberries:{n:"Blueberries",p:0.7,c:14.5,f:0.3,k:57},raspberries:{n:"Raspberries",p:1.2,c:12,f:0.7,k:52},kiwi:{n:"Kiwi",p:1.1,c:15,f:0.5,k:61},apple:{n:"Apple",p:0.3,c:14,f:0.2,k:52},pear:{n:"Pear",p:0.4,c:15,f:0.1,k:57}};
+  const MEATS={chicken:{n:"Chicken breast",p:22.5,c:0,f:2.6,k:120},ribeye:{n:"Grass-fed rib-eye",p:21.0,c:0,f:13.0,k:200},salmon:{n:"Salmon",p:17.8,c:0,f:16.4,k:220},shrimp:{n:"Shrimp",p:15.0,c:0,f:0.7,k:67}};
+  const TOPPERS={egg:{n:"Egg",unit:"1 egg",p:6.3,c:0.4,f:4.8,k:72},avocado:{n:"Avocado",unit:"½ avocado",p:1.4,c:6,f:10.3,k:112}};
+  const DAIRY={cottage:{n:"Cottage cheese",p:12.0,c:4.3,f:1.8,k:82},yogurt:{n:"Greek yogurt",p:9.3,c:4.0,f:0.2,k:56}};
+  const m=(src,w)=>({p:w/100*src.p,c:w/100*src.c,f:w/100*src.f,k:w/100*src.k});
+  const fmtHalf=n=>{const w=Math.floor(n/2),fr=(n%2)?"½":"";return w?w+fr:(fr||"0");};
+  const rowLine=(label,wg,mac,sub)=>`<div class="orow"><span class="on">${label}${sub?' <span class="unit">'+sub+'</span>':''}</span><span>${g(wg)} g</span><span>· ${g(mac.p)}P</span><span>${g(mac.c)}C</span><span>${g(mac.f)}F</span></div>`;
+
+  /* ---- COOK-AHEAD PLANNER ---- */
+  function plan(){
+    if(!$("pProt"))return;
+    const pSrc=MEATS[$("pProt").value], cSrc=CARBS[$("pCarb").value];
+    const resC=parseFloat($("pResC").value)||0, resP=parseFloat($("pResP").value)||0;
+    const rows=[["You",42,118,8],["Her",37,103,5]];
+    const pg=[],cg=[];
+    rows.forEach(([nm,Pt,Ct,dP],i)=>{
+      const dairyC=dP/12.0*4.3;
+      let c=(Ct-dairyC-resC)/cSrc.c*100; c=c<0?0:c;
+      const cP=c/100*cSrc.p;
+      let p=(Pt-dP-cP-resP)/pSrc.p*100; p=p<0?0:p;
+      cg[i]=c; pg[i]=p;
+    });
+    let o=`<table><thead><tr><th>Cook per bowl</th><th class="him">You</th><th class="her">Her</th></tr></thead><tbody>`;
+    o+=`<tr><td>${pSrc.n} <span class="unit">raw</span></td><td class="num him-n">${g(pg[0])}g</td><td class="num her-n">${g(pg[1])}g</td></tr>`;
+    o+=`<tr><td>${cSrc.n} <span class="unit">dry</span></td><td class="num him-n">${g(cg[0])}g</td><td class="num her-n">${g(cg[1])}g</td></tr>`;
+    o+=`</tbody></table>`;
+    o+=`<div class="callout" style="margin-top:11px">Cook together for one round each:<br><b>${g(pg[0]+pg[1])} g ${pSrc.n.toLowerCase()}</b> + <b>${g(cg[0]+cg[1])} g ${cSrc.n.toLowerCase()}</b> raw/dry,<br>divide cooked on the Split tab. Double it to batch 2 meals.</div>`;
+    $("pout").innerHTML=o;
+    planProt=$("pProt").value;planCarb=$("pCarb").value;planPg=pg.slice();planCg=cg.slice();
+    syncCookToBuild();
+  }
+
+  /* ---- DAY-OF ASSEMBLER ---- */
+  function assemble(){
+    if(!$("aProt"))return;
+    const Pt=parseFloat($("aTargetP").value)||0, Ct=parseFloat($("aTargetC").value)||0;
+    const prot=MEATS[$("aProt").value], pw=parseFloat($("aProtW").value)||0, P=m(prot,pw);
+    const carb=CARBS[$("aCarb").value], cw=parseFloat($("aCarbW").value)||0, C=m(carb,cw);
+    const dW=parseFloat($("aDairyW").value)||0, dairy=DAIRY[$("aDairy").value], D=m(dairy,dW);
+    const v1=VEG[$("aVeg1").value], v1w=parseFloat($("aVeg1W").value)||0, V1=m(v1,v1w);
+    const v2k=$("aVeg2").value, v2=v2k==="none"?null:VEG[v2k], v2w=parseFloat($("aVeg2W").value)||0, V2=v2?m(v2,v2w):{p:0,c:0,f:0,k:0};
+    const f1=FRUIT[$("aFruit1").value], f1w=parseFloat($("aFruit1W").value)||0, F1=m(f1,f1w);
+    const f2k=$("aFruit2").value, f2=f2k==="none"?null:FRUIT[f2k], f2w=parseFloat($("aFruit2W").value)||0, F2=f2?m(f2,f2w):{p:0,c:0,f:0,k:0};
+    const oil=parseFloat($("aOil").value)||0, oF=oil*4.5, oK=oil*40;
+    const eggN=parseFloat($("aEgg").value)||0, avoN=parseFloat($("aAvo").value)||0;
+    const E={p:eggN*6.3,c:eggN*0.4,f:eggN*4.8,k:eggN*72}, A={p:avoN*1.4,c:avoN*6,f:avoN*10.3,k:avoN*112};
+    const totP=P.p+C.p+D.p+V1.p+V2.p+F1.p+F2.p+E.p;
+    const totC=P.c+C.c+D.c+V1.c+V2.c+F1.c+F2.c+E.c+A.c;
+    const totF=P.f+C.f+D.f+V1.f+V2.f+F1.f+F2.f+E.f+A.f+oF;
+    const totK=P.k+C.k+D.k+V1.k+V2.k+F1.k+F2.k+E.k+A.k+oK;
+    let h="";
+    h+=`<div class="grp" style="margin-top:0">Cooked ahead</div>`;
+    h+=rowLine(prot.n,pw,P,"raw");
+    h+=rowLine(carb.n,cw,C,carb.s);
+    h+=`<div class="grp">Added day-of</div>`;
+    h+=rowLine(dairy.n,dW,D,"dairy");
+    h+=rowLine(v1.n,v1w,V1,"veg");
+    if(v2)h+=rowLine(v2.n,v2w,V2,"veg");
+    h+=rowLine(f1.n,f1w,F1,"fruit");
+    if(f2)h+=rowLine(f2.n,f2w,F2,"fruit");
+    if(eggN||avoN)h+=`<div class="grp">Toppers</div>`;
+    if(eggN)h+=`<div class="orow"><span class="on">Egg</span><span>×${eggN}</span><span>· ${g(E.p)}P</span><span>${g(E.c)}C</span><span>${g(E.f)}F</span></div>`;
+    if(avoN)h+=`<div class="orow"><span class="on">Avocado</span><span>×${fmtHalf(avoN)}</span><span>· 0P</span><span>${g(A.c)}C</span><span>${g(A.f)}F</span></div>`;
+    const pdiff=totP-Pt, pok=Math.abs(pdiff)<=2, ptag=pok?"on target":pdiff<0?g(-pdiff)+"g under":g(pdiff)+"g over";
+    h+=`<div class="totrow grand"><b>Bowl protein</b><span class="num">${g(totP)} g · <span class="unit ${pok?"tag-ok":"tag-off"}">${ptag}</span></span></div>`;
+    const cdiff=totC-Ct, cok=Math.abs(cdiff)<=5, ctag=cok?"on target":cdiff<0?g(-cdiff)+"g to close":g(cdiff)+"g over";
+    h+=`<div class="totrow"><b>Bowl carbs</b><span class="num">${g(totC)} / ${g(Ct)} g · <span class="unit ${cok?"tag-ok":"tag-off"}">${ctag}</span></span></div>`;
+    h+=`<div class="totrow"><b>Bowl fat</b><span class="num">${g(totF)} g</span></div>`;
+    h+=`<div class="totrow"><b>Bowl calories</b><span class="num">${g(totK)}</span></div>`;
+    $("aout").innerHTML=h;
+  }
+  let dairyAnchor=8;
+  let planProt='chicken',planCarb='brownrice',planPg=[0,0],planCg=[0,0],assembleWho=0;
+  function updateDairyW(){if(!$("aDairyW"))return;const d=DAIRY[$("aDairy").value];$("aDairyW").value=Math.round(dairyAnchor/d.p*100);}
+  function syncCookToBuild(){
+    if($("aProt"))$("aProt").value=planProt;
+    if($("aCarb"))$("aCarb").value=planCarb;
+    if($("aProtW"))$("aProtW").value=Math.round(planPg[assembleWho]);
+    if($("aCarbW"))$("aCarbW").value=Math.round(planCg[assembleWho]);
+    if($("yt"))$("yt").value=Math.round(planCg[assembleWho]);
+    assemble();calcYield();
+  }
+  function setAssemble(p,c,anchor){assembleWho=(anchor===5)?1:0;$("aTargetP").value=p;$("aTargetC").value=c;if(anchor!==undefined){dairyAnchor=anchor;updateDairyW();}syncCookToBuild();}
+
+  /* ---- SPLIT + YIELD ---- */
+  function calcSplit(){
+    if(!$("rawH"))return;
+    const hh=parseFloat($("rawH").value),gg=parseFloat($("rawG").value),c=parseFloat($("cooked").value),tot=hh+gg;
+    if(!isFinite(hh)||!isFinite(gg)||!isFinite(c)||tot<=0){$("sout").innerHTML='<div class="result"><span>Fill all three</span><span>–</span></div>';return;}
+    $("sout").innerHTML=`<div class="result h"><span>Your cooked portion</span><span>${g(hh/tot*c)} g</span></div><div class="result g"><span>Her cooked portion</span><span>${g(gg/tot*c)} g</span></div>`;
+  }
+  function calcYield(){
+    if(!$("yr"))return;
+    const r=parseFloat($("yr").value),c=parseFloat($("yc").value),t=parseFloat($("yt").value);
+    if(!isFinite(r)||!isFinite(c)||r<=0){$("yout").innerHTML='<div class="result"><span>Enter the batch weights</span><span>–</span></div>';return;}
+    const f=c/r;
+    let x=`<div class="line"><span>Cooked yield factor</span><span>×${f.toFixed(2)}</span></div>`;
+    if(isFinite(t)&&t>0) x+=`<div class="result h"><span>Serve yourself</span><span>${g(t*f)} g cooked</span></div>`;
+    $("yout").innerHTML=x;
+  }
+
+  ["pProt","pCarb","pResC","pResP"].forEach(id=>$(id)&&$(id).addEventListener("input",plan));
+  ["pProt","pCarb"].forEach(id=>$(id)&&$(id).addEventListener("change",plan));
+  ["aProtW","aCarbW","aDairyW","aVeg1W","aVeg2W","aFruit1W","aFruit2W","aEgg","aAvo","aOil","aTargetP","aTargetC"].forEach(id=>$(id)&&$(id).addEventListener("input",assemble));
+  ["aProt","aCarb","aVeg1","aVeg2","aFruit1","aFruit2"].forEach(id=>$(id)&&$(id).addEventListener("change",assemble));
+  $("aDairy")&&$("aDairy").addEventListener("change",()=>{updateDairyW();assemble();});
+  ["rawH","rawG","cooked"].forEach(id=>$(id)&&$(id).addEventListener("input",calcSplit));
+  ["yr","yc","yt"].forEach(id=>$(id)&&$(id).addEventListener("input",calcYield));
+  document.querySelectorAll('[data-tab]').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(b=>b.classList.remove('active'));document.querySelectorAll('[data-panel]').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.querySelector(`[data-panel="${btn.dataset.tab}"]`).classList.add('active');});});
+  function renderNutri(){
+    if(!$("nutriBody"))return;
+    const flag=k=>k==="ribeye"?' <span class="flag">≈</span>':'';
+    const groups=[
+      ["Proteins · per 100 g raw", MEATS, ["chicken","ribeye","salmon","shrimp"]],
+      ["Carbs · per 100 g dry", CARBS, ["brownrice","whiterice","pasta","fusilli"]],
+      ["Vegetables · per 100 g boiled", VEG, ["sweetpotato","potato","broccoli","cauliflower","brussels","greenbeans","kale","asparagus","okra","spinach","choysum","courgette"]],
+      ["Fruit · per 100 g raw", FRUIT, ["mango","blueberries","raspberries","kiwi","apple","pear"]],
+      ["Dairy · per 100 g", DAIRY, ["cottage","yogurt"]]
+    ];
+    let x="";
+    for(const [title,obj,keys] of groups){
+      x+=`<div class="grp">${title}</div><table class="ntable"><thead><tr><th>Item</th><th>kcal</th><th>P</th><th>C</th><th>F</th></tr></thead><tbody>`;
+      for(const k of keys){const it=obj[k];if(!it)continue;x+=`<tr><td>${it.n}${flag(k)}</td><td class="num">${it.k}</td><td class="num">${it.p}</td><td class="num">${it.c}</td><td class="num">${it.f}</td></tr>`;}
+      x+=`</tbody></table>`;
+    }
+    x+=`<div class="grp">Toppers · per unit</div><table class="ntable"><thead><tr><th>Item</th><th>kcal</th><th>P</th><th>C</th><th>F</th></tr></thead><tbody>`;
+    for(const k of ["egg","avocado"]){const it=TOPPERS[k];x+=`<tr><td>${it.n} <span class="unit">${it.unit}</span></td><td class="num">${it.k}</td><td class="num">${it.p}</td><td class="num">${it.c}</td><td class="num">${it.f}</td></tr>`;}
+    x+=`</tbody></table>`;
+    x+=`<div class="grp">Protein shake · per serving</div><table class="ntable"><thead><tr><th>Item</th><th>kcal</th><th>P</th><th>C</th><th>F</th></tr></thead><tbody><tr><td>Protein shake</td><td class="num">154</td><td class="num">26</td><td class="num">4.4</td><td class="num">3.6</td></tr></tbody></table>`;
+    $("nutriBody").innerHTML=x;
+  }
+  function openNutri(){document.querySelectorAll('[data-panel]').forEach(p=>p.classList.remove('active'));document.querySelector('[data-panel="nutri"]').classList.add('active');document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab==='ref'));window.scrollTo(0,0);}
+  function backToRef(){document.querySelectorAll('[data-panel]').forEach(p=>p.classList.remove('active'));document.querySelector('[data-panel="ref"]').classList.add('active');document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab==='ref'));window.scrollTo(0,0);}
+  document.addEventListener('focusin',e=>{if(e.target&&e.target.matches&&e.target.matches('input[type="number"]')){const t=e.target;setTimeout(()=>{try{t.select();}catch(_){}} ,0);}});
+  plan();assemble();calcSplit();calcYield();renderNutri();
+
+</script>
+</body>
+</html>
