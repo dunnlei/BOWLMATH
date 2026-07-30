@@ -63,6 +63,9 @@
   [data-panel="build"] .out .orow .on{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
   [data-panel="build"] .out .totrow .num{font-weight:800}
   .unit.tag-off{color:#C0392B;font-weight:700}
+  .rawin{width:46px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:2px 5px;border:2px solid var(--line);background:var(--card);text-align:right;color:var(--ink);margin:0 2px}
+  .rawin:focus{outline:2px solid var(--him);outline-offset:1px}
+  .out .result{align-items:center}
   .calc{background:#F0EFEA;border:2px solid var(--line);padding:12px;margin-top:4px}
   .calc p.hint{font-size:11.5px;color:var(--muted);margin-bottom:10px;font-weight:500}
   .hint{font-size:11.5px;color:var(--muted);font-weight:500}
@@ -126,8 +129,8 @@
   <div class="tabs">
     <button data-tab="ref" class="active">Reference</button>
     <button data-tab="cook">Cook</button>
-    <button data-tab="build">Build</button>
     <button data-tab="split">Split</button>
+    <button data-tab="build">Build</button>
   </div>
 
   <!-- REFERENCE -->
@@ -212,10 +215,10 @@
 
         <div class="grp">Added day-of</div>
         <div class="field"><label for="aDairy">Dairy</label><select id="aDairy"><option value="cottage">Cottage cheese</option><option value="yogurt">Greek yogurt</option><option value="none">— none —</option></select><input id="aDairyW" type="number" inputmode="decimal" value="67"><span class="unit">g</span></div>
-        <div class="field"><label for="aVeg1">Veg 1 <span class="unit">cooked</span></label><select id="aVeg1"><option value="sweetpotato" selected>Sweet potato</option><option value="potato">Potato</option><option value="broccoli">Broccoli</option><option value="cauliflower">Cauliflower</option><option value="brussels">Brussels sprouts</option><option value="greenbeans">Green beans</option><option value="kale">Kale</option><option value="asparagus">Asparagus</option><option value="okra">Okra</option><option value="spinach">Baby spinach</option><option value="choysum">Choy sum</option><option value="courgette">Courgette</option></select><input id="aVeg1W" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
-        <div class="field"><label for="aVeg2">Veg 2 <span class="unit">cooked</span></label><select id="aVeg2"><option value="none">— none —</option><option value="sweetpotato">Sweet potato</option><option value="potato">Potato</option><option value="broccoli" selected>Broccoli</option><option value="cauliflower">Cauliflower</option><option value="brussels">Brussels sprouts</option><option value="greenbeans">Green beans</option><option value="kale">Kale</option><option value="asparagus">Asparagus</option><option value="okra">Okra</option><option value="spinach">Baby spinach</option><option value="choysum">Choy sum</option><option value="courgette">Courgette</option></select><input id="aVeg2W" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
-        <div class="field"><label for="aFruit1">Fruit 1</label><select id="aFruit1"><option value="mango">Mango</option><option value="blueberries" selected>Blueberries</option><option value="raspberries">Raspberries</option><option value="kiwi">Kiwi</option><option value="apple">Apple</option><option value="pear">Pear</option></select><input id="aFruit1W" type="number" inputmode="decimal" value="50"><span class="unit">g</span></div>
-        <div class="field"><label for="aFruit2">Fruit 2</label><select id="aFruit2"><option value="none">— none —</option><option value="mango">Mango</option><option value="blueberries">Blueberries</option><option value="raspberries">Raspberries</option><option value="kiwi">Kiwi</option><option value="apple">Apple</option><option value="pear">Pear</option></select><input id="aFruit2W" type="number" inputmode="decimal" value="50"><span class="unit">g</span></div>
+        <div class="field"><label for="aVeg1">Veg 1 <span class="unit">cooked</span></label><select id="aVeg1"><option value="sweetpotato" selected>Sweet potato</option><option value="potato">Potato</option><option value="broccoli">Broccoli</option><option value="cauliflower">Cauliflower</option><option value="brussels">Brussels sprouts</option><option value="greenbeans">Green beans</option><option value="kale">Kale</option><option value="asparagus">Asparagus</option><option value="okra">Okra</option><option value="spinach">Baby spinach</option><option value="choysum">Choy sum</option><option value="courgette">Courgette</option><option value="lettuce">Lettuce</option></select><input id="aVeg1W" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
+        <div class="field"><label for="aVeg2">Veg 2 <span class="unit">cooked</span></label><select id="aVeg2"><option value="none">— none —</option><option value="sweetpotato">Sweet potato</option><option value="potato">Potato</option><option value="broccoli" selected>Broccoli</option><option value="cauliflower">Cauliflower</option><option value="brussels">Brussels sprouts</option><option value="greenbeans">Green beans</option><option value="kale">Kale</option><option value="asparagus">Asparagus</option><option value="okra">Okra</option><option value="spinach">Baby spinach</option><option value="choysum">Choy sum</option><option value="courgette">Courgette</option><option value="lettuce">Lettuce</option></select><input id="aVeg2W" type="number" inputmode="decimal" value="100"><span class="unit">g</span></div>
+        <div class="field"><label for="aFruit1">Fruit 1</label><select id="aFruit1"><option value="mango">Mango</option><option value="blueberries" selected>Blueberries</option><option value="raspberries">Raspberries</option><option value="kiwi">Kiwi</option><option value="apple">Apple</option><option value="pear">Pear</option><option value="dragonfruit">Red dragon fruit</option></select><input id="aFruit1W" type="number" inputmode="decimal" value="50"><span class="unit">g</span></div>
+        <div class="field"><label for="aFruit2">Fruit 2</label><select id="aFruit2"><option value="none">— none —</option><option value="mango">Mango</option><option value="blueberries">Blueberries</option><option value="raspberries">Raspberries</option><option value="kiwi">Kiwi</option><option value="apple">Apple</option><option value="pear">Pear</option><option value="dragonfruit">Red dragon fruit</option></select><input id="aFruit2W" type="number" inputmode="decimal" value="50"><span class="unit">g</span></div>
         <div class="grp">Toppers</div>
         <div class="field nosel"><label for="aEgg">Egg <span class="unit">×1 egg</span></label><input id="aEgg" type="number" inputmode="decimal" value="0" step="1" style="width:48px"><span class="unit">qty</span></div>
         <div class="field nosel"><label for="aAvo">Avocado <span class="unit">×½</span></label><input id="aAvo" type="number" inputmode="decimal" value="0" step="1" style="width:48px"><span class="unit">qty</span></div>
@@ -243,14 +246,25 @@
       </div>
     </section>
     <section>
-      <div class="eyebrow"><span>Portion from batch</span><span class="note">when cooked ≠ plan</span></div>
+      <div class="eyebrow"><span>Portion from batch</span><span class="note">cook once, portion both</span></div>
       <div class="calc">
-        <p class="hint">Cooked a different amount than suggested? Enter the batch and your dry/raw target — get the cooked weight to serve yourself.</p>
-        <div class="field"><label for="yr">Batch raw / dry cooked</label><input id="yr" type="number" inputmode="decimal" value="580"><span class="unit">g</span></div>
-        <div class="field"><label for="yc">Batch cooked (scale)</label><input id="yc" type="number" inputmode="decimal" value="1180"><span class="unit">g</span></div>
-        <div class="field"><label for="yt">Your raw / dry target</label><input id="yt" type="number" inputmode="decimal" value="134"><span class="unit">g</span></div>
-        <div class="out" id="yout"></div>
-        <p class="hint" style="margin-top:9px">Typical dry→cooked: rice ×2.7 · Fiorelli ×2.3 · chicken ×0.75 · shrimp ×0.88.</p>
+        <p class="hint">Enter what was actually cooked. Targets come from your Cook plan, so you get every cooked portion at once — no re-typing per bowl.</p>
+        <div class="grp" style="margin-top:0;color:var(--ink)">Protein · <span id="pbPn" style="text-transform:none;letter-spacing:0"></span></div>
+        <div class="field"><label for="pbPR">Batch raw cooked</label><input id="pbPR" type="number" inputmode="decimal" value="575"><span class="unit">g</span></div>
+        <div class="field"><label for="pbPC">Batch cooked (scale)</label><input id="pbPC" type="number" inputmode="decimal" value="520"><span class="unit">g</span></div>
+        <div class="out">
+          <div class="line" style="color:var(--muted)"><span>cooked yield</span><span id="pbPf">–</span></div>
+          <div class="result h"><span>You <input id="pbPYou" class="rawin" type="number" inputmode="decimal"> <span class="unit">g raw</span></span><span id="pbPYs">–</span></div>
+          <div class="result g"><span>Her <input id="pbPHer" class="rawin" type="number" inputmode="decimal"> <span class="unit">g raw</span></span><span id="pbPHs">–</span></div>
+        </div>
+        <div class="grp" style="color:var(--ink)">Carb · <span id="pbCn" style="text-transform:none;letter-spacing:0"></span></div>
+        <div class="field"><label for="pbCR">Batch dry cooked</label><input id="pbCR" type="number" inputmode="decimal" value="580"><span class="unit">g</span></div>
+        <div class="field"><label for="pbCC">Batch cooked (scale)</label><input id="pbCC" type="number" inputmode="decimal" value="1180"><span class="unit">g</span></div>
+        <div class="out">
+          <div class="line" style="color:var(--muted)"><span>cooked yield</span><span id="pbCf">–</span></div>
+          <div class="result h"><span>You <input id="pbCYou" class="rawin" type="number" inputmode="decimal"> <span class="unit">g dry</span></span><span id="pbCYs">–</span></div>
+          <div class="result g"><span>Her <input id="pbCHer" class="rawin" type="number" inputmode="decimal"> <span class="unit">g dry</span></span><span id="pbCHs">–</span></div>
+        </div>
       </div>
     </section>
   </div>
@@ -273,8 +287,8 @@
   const $ = id => document.getElementById(id);
   const g = n => (isFinite(n) ? Math.round(n) : "–");
   const CARBS={brownrice:{n:"Brown rice",p:7.9,c:71.3,f:2.4,k:345,s:"dry"},whiterice:{n:"White rice",p:5.4,c:78,f:1.1,k:345,s:"dry"},pasta:{n:"Fiorelli pasta",p:12.2,c:71.4,f:1.4,k:353,s:"dry"},fusilli:{n:"HP fusilli",p:22.0,c:55.3,f:1.9,k:340,s:"dry"}};
-  const VEG={sweetpotato:{n:"Sweet potato",p:1.6,c:20,f:0.1,k:85},potato:{n:"Potato",p:1.7,c:20,f:0.1,k:87},broccoli:{n:"Broccoli",p:2.4,c:7,f:0.4,k:35},cauliflower:{n:"Cauliflower",p:1.8,c:4,f:0.5,k:23},brussels:{n:"Brussels sprouts",p:2.6,c:7,f:0.5,k:36},greenbeans:{n:"Green beans",p:1.9,c:8,f:0.3,k:35},kale:{n:"Kale",p:1.9,c:6,f:0.4,k:28},asparagus:{n:"Asparagus",p:2.4,c:4,f:0.2,k:22},okra:{n:"Okra",p:1.9,c:4.5,f:0.2,k:22},spinach:{n:"Baby spinach",p:3.0,c:4,f:0.3,k:23},choysum:{n:"Choy sum",p:1.8,c:3,f:0.3,k:20},courgette:{n:"Courgette",p:1.2,c:3,f:0.3,k:16}};
-  const FRUIT={mango:{n:"Mango",p:0.8,c:15,f:0.4,k:60},blueberries:{n:"Blueberries",p:0.7,c:14.5,f:0.3,k:57},raspberries:{n:"Raspberries",p:1.2,c:12,f:0.7,k:52},kiwi:{n:"Kiwi",p:1.1,c:15,f:0.5,k:61},apple:{n:"Apple",p:0.3,c:14,f:0.2,k:52},pear:{n:"Pear",p:0.4,c:15,f:0.1,k:57}};
+  const VEG={sweetpotato:{n:"Sweet potato",p:1.6,c:20,f:0.1,k:85},potato:{n:"Potato",p:1.7,c:20,f:0.1,k:87},broccoli:{n:"Broccoli",p:2.4,c:7,f:0.4,k:35},cauliflower:{n:"Cauliflower",p:1.8,c:4,f:0.5,k:23},brussels:{n:"Brussels sprouts",p:2.6,c:7,f:0.5,k:36},greenbeans:{n:"Green beans",p:1.9,c:8,f:0.3,k:35},kale:{n:"Kale",p:1.9,c:6,f:0.4,k:28},asparagus:{n:"Asparagus",p:2.4,c:4,f:0.2,k:22},okra:{n:"Okra",p:1.9,c:4.5,f:0.2,k:22},spinach:{n:"Baby spinach",p:3.0,c:4,f:0.3,k:23},choysum:{n:"Choy sum",p:1.8,c:3,f:0.3,k:20},courgette:{n:"Courgette",p:1.2,c:3,f:0.3,k:16},lettuce:{n:"Lettuce",p:1.4,c:3,f:0.2,k:15}};
+  const FRUIT={mango:{n:"Mango",p:0.8,c:15,f:0.4,k:60},blueberries:{n:"Blueberries",p:0.7,c:14.5,f:0.3,k:57},raspberries:{n:"Raspberries",p:1.2,c:12,f:0.7,k:52},kiwi:{n:"Kiwi",p:1.1,c:15,f:0.5,k:61},apple:{n:"Apple",p:0.3,c:14,f:0.2,k:52},pear:{n:"Pear",p:0.4,c:15,f:0.1,k:57},dragonfruit:{n:"Red dragon fruit",p:1.2,c:13,f:0.4,k:60}};
   const MEATS={chicken:{n:"Chicken breast",p:22.5,c:0,f:2.6,k:120},ribeye:{n:"Grass-fed rib-eye",p:21.0,c:0,f:13.0,k:200},salmon:{n:"Salmon",p:17.8,c:0,f:16.4,k:220},shrimp:{n:"Shrimp",p:15.0,c:0,f:0.7,k:67}};
   const TOPPERS={egg:{n:"Egg",unit:"1 egg",p:6.3,c:0.4,f:4.8,k:72},avocado:{n:"Avocado",unit:"½ avocado",p:1.4,c:6,f:10.3,k:112}};
   const DAIRY={cottage:{n:"Cottage cheese",p:12.0,c:4.3,f:1.8,k:82},yogurt:{n:"Greek yogurt",p:9.3,c:4.0,f:0.2,k:56}};
@@ -354,8 +368,9 @@
     if($("aCarb"))$("aCarb").value=planCarb;
     if($("aProtW"))$("aProtW").value=Math.round(planPg[assembleWho]);
     if($("aCarbW"))$("aCarbW").value=Math.round(planCg[assembleWho]);
-    if($("yt"))$("yt").value=Math.round(planCg[assembleWho]);
-    assemble();calcYield();
+    if($("pbPYou")){$("pbPYou").value=Math.round(planPg[0]);$("pbPHer").value=Math.round(planPg[1]);}
+    if($("pbCYou")){$("pbCYou").value=Math.round(planCg[0]);$("pbCHer").value=Math.round(planCg[1]);}
+    assemble();calcPortion();
   }
   function setAssemble(p,c,anchor){assembleWho=(anchor===5)?1:0;$("aTargetP").value=p;$("aTargetC").value=c;if(anchor!==undefined){dairyAnchor=anchor;updateDairyW();}syncCookToBuild();}
 
@@ -366,14 +381,20 @@
     if(!isFinite(hh)||!isFinite(gg)||!isFinite(c)||tot<=0){$("sout").innerHTML='<div class="result"><span>Fill all three</span><span>–</span></div>';return;}
     $("sout").innerHTML=`<div class="result h"><span>Your cooked portion</span><span>${g(hh/tot*c)} g</span></div><div class="result g"><span>Her cooked portion</span><span>${g(gg/tot*c)} g</span></div>`;
   }
-  function calcYield(){
-    if(!$("yr"))return;
-    const r=parseFloat($("yr").value),c=parseFloat($("yc").value),t=parseFloat($("yt").value);
-    if(!isFinite(r)||!isFinite(c)||r<=0){$("yout").innerHTML='<div class="result"><span>Enter the batch weights</span><span>–</span></div>';return;}
-    const f=c/r;
-    let x=`<div class="line"><span>Cooked yield factor</span><span>×${f.toFixed(2)}</span></div>`;
-    if(isFinite(t)&&t>0) x+=`<div class="result h"><span>Serve yourself</span><span>${g(t*f)} g cooked</span></div>`;
-    $("yout").innerHTML=x;
+  function pbCalc(fId,youId,herId,ysId,hsId,rawId,cookId){
+    const r=parseFloat($(rawId).value),c=parseFloat($(cookId).value);
+    const ok=isFinite(r)&&isFinite(c)&&r>0, f=ok?c/r:NaN;
+    $(fId).textContent=ok?"×"+f.toFixed(2):"–";
+    const ty=parseFloat($(youId).value), th=parseFloat($(herId).value);
+    $(ysId).textContent=(ok&&isFinite(ty))?g(ty*f)+" g":"–";
+    $(hsId).textContent=(ok&&isFinite(th))?g(th*f)+" g":"–";
+  }
+  function calcPortion(){
+    if(!$("pbPR"))return;
+    if($("pbPn"))$("pbPn").textContent=(MEATS[planProt]?MEATS[planProt].n:planProt).toLowerCase();
+    if($("pbCn"))$("pbCn").textContent=(CARBS[planCarb]?CARBS[planCarb].n:planCarb).toLowerCase();
+    pbCalc("pbPf","pbPYou","pbPHer","pbPYs","pbPHs","pbPR","pbPC");
+    pbCalc("pbCf","pbCYou","pbCHer","pbCYs","pbCHs","pbCR","pbCC");
   }
 
   ["pProt","pCarb","pResC","pResP"].forEach(id=>$(id)&&$(id).addEventListener("input",plan));
@@ -382,7 +403,7 @@
   ["aProt","aCarb","aVeg1","aVeg2","aFruit1","aFruit2"].forEach(id=>$(id)&&$(id).addEventListener("change",assemble));
   $("aDairy")&&$("aDairy").addEventListener("change",()=>{updateDairyW();assemble();});
   ["rawH","rawG","cooked"].forEach(id=>$(id)&&$(id).addEventListener("input",calcSplit));
-  ["yr","yc","yt"].forEach(id=>$(id)&&$(id).addEventListener("input",calcYield));
+  ["pbPR","pbPC","pbCR","pbCC","pbPYou","pbPHer","pbCYou","pbCHer"].forEach(id=>$(id)&&$(id).addEventListener("input",calcPortion));
   document.querySelectorAll('[data-tab]').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(b=>b.classList.remove('active'));document.querySelectorAll('[data-panel]').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.querySelector(`[data-panel="${btn.dataset.tab}"]`).classList.add('active');});});
   function renderNutri(){
     if(!$("nutriBody"))return;
@@ -390,8 +411,8 @@
     const groups=[
       ["Proteins · per 100 g raw", MEATS, ["chicken","ribeye","salmon","shrimp"]],
       ["Carbs · per 100 g dry", CARBS, ["brownrice","whiterice","pasta","fusilli"]],
-      ["Vegetables · per 100 g boiled", VEG, ["sweetpotato","potato","broccoli","cauliflower","brussels","greenbeans","kale","asparagus","okra","spinach","choysum","courgette"]],
-      ["Fruit · per 100 g raw", FRUIT, ["mango","blueberries","raspberries","kiwi","apple","pear"]],
+      ["Vegetables · per 100 g boiled", VEG, ["sweetpotato","potato","broccoli","cauliflower","brussels","greenbeans","kale","asparagus","okra","spinach","choysum","courgette","lettuce"]],
+      ["Fruit · per 100 g raw", FRUIT, ["mango","blueberries","raspberries","kiwi","apple","pear","dragonfruit"]],
       ["Dairy · per 100 g", DAIRY, ["cottage","yogurt"]]
     ];
     let x="";
@@ -409,7 +430,7 @@
   function openNutri(){document.querySelectorAll('[data-panel]').forEach(p=>p.classList.remove('active'));document.querySelector('[data-panel="nutri"]').classList.add('active');document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab==='ref'));window.scrollTo(0,0);}
   function backToRef(){document.querySelectorAll('[data-panel]').forEach(p=>p.classList.remove('active'));document.querySelector('[data-panel="ref"]').classList.add('active');document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab==='ref'));window.scrollTo(0,0);}
   document.addEventListener('focusin',e=>{if(e.target&&e.target.matches&&e.target.matches('input[type="number"]')){const t=e.target;setTimeout(()=>{try{t.select();}catch(_){}} ,0);}});
-  plan();assemble();calcSplit();calcYield();renderNutri();
+  plan();assemble();calcSplit();calcPortion();renderNutri();
 
 </script>
 </body>
